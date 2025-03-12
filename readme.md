@@ -40,7 +40,3 @@ rnfe -> create a new function component
    ```
    this will help us to use relative path in our application
 5. create \_layout.tsx file under app folder
-6. install expo-image
-   npx expo install expo-image
-7. install expo-splash-screen
-   npx expo install expo-splash-screen

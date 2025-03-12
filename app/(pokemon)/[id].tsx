@@ -8,6 +8,8 @@ const PokemonDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const [pokemon, setPokemon] = useState<Pokemon>();
+  const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0);
+
   useEffect(() => {
     getPokemonDetails(id).then((data) => setPokemon(data));
     if (pokemon) {
@@ -16,14 +18,33 @@ const PokemonDetail = () => {
       });
     }
   }, [pokemon]);
-  console.log(pokemon);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSpriteIndex((prevIndex) => (prevIndex + 1) % 4);
+    }, 1000); // Change sprite every 1 second
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const getCurrentSprite = () => {
+    if (!pokemon?.sprites) return "";
+    const sprites = [
+      pokemon.sprites.front_default,
+      pokemon.sprites.front_shiny,
+      pokemon.sprites.back_shiny,
+      pokemon.sprites.back_default,
+    ];
+    return sprites[currentSpriteIndex] || sprites[0];
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>{pokemon?.name}</Text>
       </View>
       <View style={styles.card}>
-        <Image source={{ uri: pokemon?.image }} style={styles.image} />
+        <Image source={{ uri: getCurrentSprite() }} style={styles.image} />
       </View>
       <View style={styles.card}>
         <Text>Height</Text>

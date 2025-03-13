@@ -22,3 +22,9 @@ export interface Pokemon {
     };
   }[];
 }
+
+export interface FavoritePokemon {
+  id: string;
+  name: string;
+  image: string;
+}

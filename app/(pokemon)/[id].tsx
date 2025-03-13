@@ -1,11 +1,14 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { getPokemonDetails } from "@/api/pokeapi";
 import { Pokemon } from "@/interfaces/pokemon";
+import { useFavorite } from "@/contexts/favoritePokemon";
 
 const PokemonDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { favoritePokemon, toggleFavorite } = useFavorite();
   const navigation = useNavigation();
   const [pokemon, setPokemon] = useState<Pokemon>();
   const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0);
@@ -15,9 +18,20 @@ const PokemonDetail = () => {
     if (pokemon) {
       navigation.setOptions({
         title: pokemon?.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
+        headerRight: () => (
+          <TouchableOpacity onPress={() => toggleFavorite(pokemon.id)}>
+            <Ionicons
+              name={
+                favoritePokemon.includes(pokemon.id) ? "heart" : "heart-outline"
+              }
+              size={24}
+              color="white"
+            />
+          </TouchableOpacity>
+        ),
       });
     }
-  }, [pokemon]);
+  }, [pokemon, favoritePokemon]);
 
   useEffect(() => {
     const interval = setInterval(() => {
